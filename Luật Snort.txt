@@ -1,0 +1,20 @@
+1. Luật phát hiện tấn công SYN Flood
+alert tcp any any -> $HOME_NET 80 (msg:"SYN Flood Attack"; flags:S; threshold:type both, track by_dst, count 20, seconds 3; sid:1000001; rev:1; classtype:attempted-dos;)
+
+2. Luật phát hiện tấn công Ping Flood
+alert icmp any any -> $HOME_NET any (msg:"Ping Flood Attack"; itype:8; threshold:type both, track by_dst, count 50, seconds 3; sid:1000002; rev:1; classtype:attempted-dos;)
+
+3. Luật phát hiện tấn công Ping of Death
+alert icmp any any -> $HOME_NET any (msg:"Ping Of Death Attack"; dsize:>64; itype:8; sid:1000003; rev:1; classtype:attempted-dos;)
+
+4. Luật phát hiện tấn công UDP Flood
+alert udp any any -> $HOME_NET any (msg:"UDP Flood Attack"; threshold:type both, track by_dst, count 50, seconds 3; sid:1000004; rev:1; classtype:attempted-dos;)
+
+5. Luật phát hiện tấn công Slowloris
+alert tcp any any -> $HOME_NET 8080 (msg:"Slowloris Attack"; flow:to_server,established; threshold:type both, track by_src, count 3, seconds 5; dsize:<15; sid:1000005; rev:1; classtype:attempted-dos;)
+
+6. Luật phát hiện tấn công HTTP Flood
+alert tcp any any -> $HOME_NET 8080 (msg:"HTTP Flood Attack"; content:"GET"; nocase; http_method; detection_filter:track by_dst, count 50, seconds 3; sid:1000006; rev:1; classtype:attempted-dos;)
+
+7. Luật phát hiện tấn công Smurf
+alert icmp any any -> $BROADCAST_NET any (msg:"SMURF Attack"; itype:8; detection_filter: track by_src, count 50, seconds 3; sid:1000007; rev:1; classtype:attempted-dos;)
